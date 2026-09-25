@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <!-- AdMob Ad Unit IDs (Default to Google's official sample test IDs) -->
+    <entry>
+        <key>banner_ad_unit_id</key>
+        <value>ca-app-pub-3940256099942544/6300978111</value>
+    </entry>
+    <entry>
+        <key>interstitial_ad_unit_id</key>
+        <value>ca-app-pub-3940256099942544/1033173712</value>
+    </entry>
+    <entry>
+        <key>rewarded_ad_unit_id</key>
+        <value>ca-app-pub-3940256099942544/5224354917</value>
+    </entry>
+    <entry>
+        <key>rewarded_interstitial_ad_unit_id</key>
+        <value>ca-app-pub-3940256099942544/5354046379</value>
+    </entry>
+    <entry>
+        <key>native_ad_unit_id</key>
+        <value>ca-app-pub-3940256099942544/2247696110</value>
+    </entry>
+    <entry>
+        <key>app_open_ad_unit_id</key>
+        <value>ca-app-pub-3940256099942544/9257395921</value>
+    </entry>
+
+    <!-- 1. Banner Controls -->
+    <entry>
+        <key>enable_banner_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>preload_banner_on_start</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>auto_replenish_banner</key>
+        <value>false</value>
+    </entry>
+
+    <!-- 2. Interstitial Controls -->
+    <entry>
+        <key>enable_interstitial_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>preload_interstitial_on_start</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>auto_replenish_interstitial</key>
+        <value>false</value>
+    </entry>
+
+    <!-- 3. App Open Controls -->
+    <entry>
+        <key>enable_app_open_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>preload_app_open_on_start</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>auto_replenish_app_open</key>
+        <value>false</value>
+    </entry>
+
+    <!-- 4. Native Controls -->
+    <entry>
+        <key>enable_native_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>preload_native_on_start</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>auto_replenish_native</key>
+        <value>false</value>
+    </entry>
+
+    <!-- 5. Rewarded Controls -->
+    <entry>
+        <key>enable_rewarded_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>preload_rewarded_on_start</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>auto_replenish_rewarded</key>
+        <value>false</value>
+    </entry>
+
+    <!-- Other Options -->
+    <entry>
+        <key>enable_rewarded_interstitial_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>use_test_ads</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>enable_ads_logging</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>interstitial_frequency</key>
+        <value>3</value>
+    </entry>
+    <entry>
+        <key>interstitial_cooldown_millis</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>app_open_cooldown_millis</key>
+        <value>14400000</value>
+    </entry>
+</defaultsMap>

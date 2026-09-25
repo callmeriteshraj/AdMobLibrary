@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_native_card"
+    android:padding="12dp">
+
+    <!-- Badge skeleton -->
+    <View
+        android:id="@+id/shimmer_badge"
+        android:layout_width="24dp"
+        android:layout_height="14dp"
+        android:background="@drawable/bg_shimmer_rect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Icon skeleton -->
+    <View
+        android:id="@+id/shimmer_icon"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_shimmer_rect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_badge" />
+
+    <!-- Headline skeleton -->
+    <View
+        android:id="@+id/shimmer_headline"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/bg_shimmer_rect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shimmer_icon"
+        app:layout_constraintTop_toTopOf="@id/shimmer_icon" />
+
+    <!-- Subtitle skeleton -->
+    <View
+        android:id="@+id/shimmer_subtitle"
+        android:layout_width="120dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_shimmer_rect"
+        app:layout_constraintStart_toEndOf="@id/shimmer_icon"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_headline" />
+
+    <!-- Media skeleton -->
+    <View
+        android:id="@+id/shimmer_media"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_shimmer_rect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

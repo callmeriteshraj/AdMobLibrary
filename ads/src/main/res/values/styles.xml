@@ -1,0 +1,5 @@
+<resources>
+    <style name="ShapeAppearance.App.Corner8dp" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">@dimen/_8sdp</item>
+    </style>
+</resources>

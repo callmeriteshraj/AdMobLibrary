@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_attribution_label">Ad</string>
+    <string name="ad_loading">Loading ad...</string>
+    <string name="msg_loading_ad">Loading ad... Please wait</string>
+    <string name="ad_call_to_action_default">Install</string>
+</resources>

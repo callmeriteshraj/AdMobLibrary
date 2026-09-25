@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AdsSDKXML">
+
+        <!-- Google AdMob Application ID: Test App ID (Configured per application) -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Screen demonstrating ad suppression / restricted screen -->
+        <activity
+            android:name=".restricted.RestrictedActivity"
+            android:exported="false"
+            android:label="Restricted / Premium Screen" />
+
+        <!-- Screen demonstrating Native Ads in XML -->
+        <activity
+            android:name=".nativead.NativeAdShowcaseActivity"
+            android:exported="false"
+            android:label="Native Ads Showcase" />
+
+        <!-- Screen demonstrating Medium Rectangle (300x250) Banner Ad in XML -->
+        <activity
+            android:name=".banner.MediumRectangleFlowActivity"
+            android:exported="false"
+            android:label="Medium Rectangle Flow" />
+
+        <!-- Screen demonstrating Native Ads Flow -->
+        <activity
+            android:name=".nativead.NativeAdFlowActivity"
+            android:exported="false"
+            android:label="Native 3-Level Flow" />
+
+        <!-- Screen demonstrating Medium Rectangle (300x250) Banner Ad in Jetpack Compose -->
+        <activity
+            android:name=".banner.ComposeMediumRectangleActivity"
+            android:exported="false"
+            android:label="Compose Medium Rectangle Ad" />
+
+    </application>
+
+</manifest>

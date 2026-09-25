@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BannerAdView">
+        <attr name="bannerSize" format="enum">
+            <enum name="adaptive" value="0" />
+            <enum name="banner" value="1" />
+            <enum name="largeBanner" value="2" />
+            <enum name="mediumRectangle" value="3" />
+        </attr>
+        <attr name="autoLoadBanner" format="boolean" />
+        <attr name="collapsibleBanner" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="NativeAdViewContainer">
+        <attr name="nativeTemplate" format="enum">
+            <enum name="small" value="0" />
+            <enum name="medium" value="1" />
+            <enum name="big" value="2" />
+        </attr>
+        <attr name="autoLoadNative" format="boolean" />
+    </declare-styleable>
+</resources>
