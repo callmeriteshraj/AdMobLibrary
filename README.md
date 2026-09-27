@@ -27,18 +27,17 @@ A production-ready, reusable Android Ads Module/SDK built with **Kotlin**, **XML
 
 ## 🛠️ Step 1: Add Dependencies
 
-### 1. Include Module in `settings.gradle.kts`:
-```kotlin
-include(":ads")
-include(":app")
-```
+dependencyResolutionManagement {
+		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+		repositories {
+			mavenCentral()
+			maven { url 'https://jitpack.io' }
+		}
+	}
 
-### 2. In Host App's `app/build.gradle.kts`:
-```kotlin
 dependencies {
-    implementation(project(":ads"))
-}
-```
+	        implementation 'com.github.callmeriteshraj:AdMobLibrary:1.0.0'
+	}
 
 ---
 
