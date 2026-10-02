@@ -117,16 +117,17 @@ class BannerAdView @JvmOverloads constructor(
         }
 
         val logTag = if (bannerSize == BannerAdSize.MEDIUM_RECTANGLE) AdsLogger.TAG_MREC else AdsLogger.TAG_BANNER
+        val config = AdsManager.config
 
-        if (!AdsManager.isAdsEnabled) {
-            AdsLogger.d(logTag, "Ads are globally disabled. Hiding banner.")
+        if (!AdsManager.isAdsEnabled || (config != null && !config.enableBanner)) {
+            AdsLogger.d(logTag, "Banner ads are disabled (global=${AdsManager.isAdsEnabled}, format=${config?.enableBanner}). Hiding banner.")
             visibility = View.GONE
             onAdFailedListener?.invoke(AdsError.AdsDisabled)
             return
         }
 
         val effectiveAdUnitId = customAdUnitId
-            ?: AdsManager.config?.getEffectiveBannerId()
+            ?: config?.getEffectiveBannerId()
             ?: ""
 
         if (effectiveAdUnitId.isBlank()) {
@@ -144,7 +145,6 @@ class BannerAdView @JvmOverloads constructor(
         }
 
         // Check if a pre-loaded backup banner is already available for this size
-        val config = AdsManager.config
         if (config != null && !isCollapsible && customAdUnitId == null) {
             val preloadedAdView = BannerPreloadCache.consumePreloadedBanner(context, config, bannerSize)
             if (preloadedAdView != null) {

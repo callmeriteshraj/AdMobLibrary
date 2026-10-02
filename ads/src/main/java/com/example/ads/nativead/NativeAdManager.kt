@@ -105,6 +105,10 @@ class NativeAdManager {
      * pre-loading the next backup ad in the background.
      */
     fun consumePreloadedNativeAd(context: Context, config: AdsConfig): NativeAd? {
+        if (!config.enableNative || !AdsManager.isAdsEnabled) {
+            AdsLogger.d(AdsLogger.TAG_NATIVE, "Native ads are disabled. Suppressing preloaded native ad consumption.")
+            return null
+        }
         val ad = preloadedNativeAd
         if (ad != null) {
             preloadedNativeAd = null

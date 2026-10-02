@@ -85,6 +85,10 @@ object BannerPreloadCache {
      */
     fun consumePreloadedBanner(context: Context, config: AdsConfig, bannerSize: BannerAdSize): AdView? {
         val logTag = if (bannerSize == BannerAdSize.MEDIUM_RECTANGLE) AdsLogger.TAG_MREC else AdsLogger.TAG_BANNER
+        if (!config.enableBanner || !AdsManager.isAdsEnabled) {
+            AdsLogger.d(logTag, "Banner ads are disabled. Suppressing preloaded banner consumption.")
+            return null
+        }
         val adView = cachedBanners.remove(bannerSize)
         if (adView != null) {
             AdsLogger.i(logTag, "Consuming preloaded banner for size: $bannerSize")

@@ -82,18 +82,18 @@ class NativeAdViewContainer @JvmOverloads constructor(
      * Loads and renders a native ad into this container.
      */
     fun loadAd() {
-        if (!AdsManager.isAdsEnabled) {
-            AdsLogger.d(AdsLogger.TAG_NATIVE, "NativeAdViewContainer: Ads are globally disabled. Hiding container.")
-            visibility = View.GONE
-            onAdFailedListener?.invoke(AdsError.AdsDisabled)
-            return
-        }
-
         val config = AdsManager.config
         if (config == null) {
             AdsLogger.w(AdsLogger.TAG_NATIVE, "NativeAdViewContainer: Ads SDK not initialized.")
             visibility = View.GONE
             onAdFailedListener?.invoke(AdsError.NotInitialized)
+            return
+        }
+
+        if (!AdsManager.isAdsEnabled || !config.enableNative) {
+            AdsLogger.d(AdsLogger.TAG_NATIVE, "NativeAdViewContainer: Native ads are disabled (global=${AdsManager.isAdsEnabled}, format=${config.enableNative}). Hiding container.")
+            visibility = View.GONE
+            onAdFailedListener?.invoke(AdsError.AdsDisabled)
             return
         }
 
