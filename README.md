@@ -24,91 +24,20 @@ A production-ready, reusable Android Ads Module/SDK built with **Kotlin**, **XML
 
 ---
 
-## 📁 Architecture & Directory Structure
-
-```text
-AdsSDKXML/
-├── ads/                                  <-- Reusable Android Library Module (:ads)
-│   ├── build.gradle.kts
-│   ├── consumer-rules.pro               <-- ProGuard / R8 consumer rules
-│   └── src/main/
-│       ├── AndroidManifest.xml          <-- Library permissions (INTERNET, ACCESS_NETWORK_STATE)
-│       ├── java/com/example/ads/
-│       │   ├── AdsManager.kt             <-- Primary unified facade API
-│       │   ├── AdsConfig.kt              <-- Configuration & Builder
-│       │   ├── AdsError.kt               <-- Standardized sealed error hierarchy
-│       │   ├── AdsCallbacks.kt           <-- Listener interfaces & callbacks
-│       │   ├── consent/
-│       │   │   ├── AdsConsentManager.kt  <-- UMP Consent & Privacy Options flow
-│       │   │   └── ConsentStatus.kt
-│       │   ├── banner/
-│       │   │   ├── BannerAdView.kt       <-- Custom XML View & Adaptive Banner loader
-│       │   │   ├── BannerAdSize.kt       <-- ADAPTIVE, BANNER, LARGE_BANNER, MEDIUM_RECTANGLE
-│       │   │   └── BannerPreloadCache.kt <-- In-memory preload cache
-│       │   ├── interstitial/
-│       │   │   ├── InterstitialAdManager.kt <-- Zero-flicker on-demand & preloading manager
-│       │   │   └── AdFrequencyController.kt <-- Action counter & interval cooldown
-│       │   ├── rewarded/
-│       │   │   ├── RewardedAdManager.kt  <-- Rewarded ads with strict reward verification
-│       │   │   ├── CoinManager.kt        <-- Built-in persisted coin & virtual reward manager
-│       │   │   └── RewardItemData.kt
-│       │   ├── rewardedinterstitial/
-│       │   │   └── RewardedInterstitialManager.kt <-- Rewarded Interstitial format
-│       │   ├── nativead/
-│       │   │   ├── NativeAdViewContainer.kt  <-- XML container for Native Ads
-│       │   │   ├── NativeAdManager.kt        <-- Native ad loader & asset binder
-│       │   │   └── NativeAdTemplate.kt       <-- Small, Medium, Custom templates
-│       │   ├── appopen/
-│       │   │   ├── AppOpenAdManager.kt   <-- Foreground listener, cooldown & screening
-│       │   │   └── NoAdsScreen.kt        <-- Marker interface / annotation
-│       │   └── util/
-│       │       ├── AdLoadingDialog.kt    <-- Smooth, non-blocking on-demand loading dialog
-│       │       ├── AdsLogger.kt          <-- Safe debug logger
-│       │       ├── AdMobTestIds.kt       <-- Google's official test ad unit constants
-│       │       └── NetworkUtils.kt       <-- Non-blocking network connectivity checks
-│       └── res/
-│           ├── layout/
-│           │   ├── layout_dialog_ad_loading.xml <-- On-demand loading dialog layout
-│           │   ├── layout_native_ad_medium.xml  <-- Medium Native Ad XML layout
-│           │   ├── layout_native_ad_small.xml   <-- Small Native Ad XML layout
-│           │   └── layout_native_ad_shimmer.xml <-- Loading skeleton layout
-│           ├── values/
-│           │   ├── attrs.xml                    <-- Custom XML attributes
-│           │   ├── colors.xml
-│           │   └── strings.xml
-│           └── drawable/
-│               ├── bg_ad_badge.xml
-│               ├── bg_cta_button.xml
-│               ├── bg_native_card.xml
-│               └── bg_shimmer_rect.xml
-│
-├── app/                                  <-- Demo Host Application (:app)
-│   ├── build.gradle.kts
-│   └── src/main/
-│       ├── AndroidManifest.xml          <-- AdMob App ID & Activity declarations
-│       └── java/com/example/adssdkxml/
-│           ├── MyApplication.kt         <-- Centralized initialization in Application class
-│           ├── MainActivity.kt          <-- Showcase for all 6 ad formats
-│           ├── RestrictedActivity.kt    <-- Demonstrates NoAdsScreen exclusion
-│           └── NativeAdShowcaseActivity.kt <-- Demonstrates Native XML container
-```
-
----
 
 ## 🛠️ Step 1: Add Dependencies
 
-### 1. Include Module in `settings.gradle.kts`:
-```kotlin
-include(":ads")
-include(":app")
-```
+dependencyResolutionManagement {
+		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+		repositories {
+			mavenCentral()
+			maven { url 'https://jitpack.io' }
+		}
+	}
 
-### 2. In Host App's `app/build.gradle.kts`:
-```kotlin
 dependencies {
-    implementation(project(":ads"))
-}
-```
+	        implementation 'com.github.callmeriteshraj:AdMobLibrary:1.0.0'
+	}
 
 ---
 
