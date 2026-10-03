@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageView
             android:id="@+id/ad_app_icon"
             android:layout_width="@dimen/_42sdp"
             android:layout_height="@dimen/_42sdp"
@@ -30,7 +30,6 @@
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ad_media"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Corner8dp"
             tools:src="@android:drawable/sym_def_app_icon" />
 
         <TextView
@@ -97,8 +96,8 @@
 
 
 
-        <!-- Call to Action Full Width Gradient Material Button -->
-        <com.google.android.material.button.MaterialButton
+        <!-- Call to Action Full Width Gradient Button -->
+        <Button
             android:id="@+id/ad_call_to_action"
             android:layout_width="0dp"
             android:layout_height="@dimen/_35sdp"
@@ -111,8 +110,6 @@
             android:textAllCaps="true"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/_13ssp"
-            app:backgroundTint="@null"
-            app:cornerRadius="@dimen/_50sdp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
