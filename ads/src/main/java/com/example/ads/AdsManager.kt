@@ -390,7 +390,8 @@ object AdsManager {
     }
 
     /**
-     * Pre-loads a Banner or Medium Rectangle Ad in advance in the background.
+     * Fills the configured banner preload queue for the requested size in the background.
+     * The queue capacity is [AdsConfig.bannerPreloadCount] (or one for legacy preload flags).
      */
     fun preloadBanner(context: Context, bannerSize: BannerAdSize = BannerAdSize.ADAPTIVE, onLoaded: (() -> Unit)? = null) {
         val currentConfig = config ?: return

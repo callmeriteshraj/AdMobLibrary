@@ -218,7 +218,7 @@ class InterstitialAdManager {
             }
 
             override fun onAdImpression() {
-                AdsLogger.d(AdsLogger.TAG_INTERSTITIAL, "Interstitial impression recorded.")
+                AdsLogger.adImpression("interstitial", config.getEffectiveInterstitialId())
             }
 
             override fun onAdClicked() {

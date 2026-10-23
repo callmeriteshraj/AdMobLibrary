@@ -22,6 +22,8 @@ data class AdsConfig(
     val enableBanner: Boolean = true,
     val preloadBannerOnStart: Boolean = false,
     val autoReplenishBanner: Boolean = false,
+    /** Number of ready banner views to keep queued per ad unit and size. Zero disables pooling. */
+    val bannerPreloadCount: Int = 3,
 
     // 2. INTERSTITIAL FLAGS
     val enableInterstitial: Boolean = true,
@@ -60,6 +62,14 @@ data class AdsConfig(
     val maxAdContentRating: String? = null,
     val allowRewardedForPremium: Boolean = true
 ) {
+    /** Keeps legacy one-item preloading enabled when either old preload flag is used. */
+    internal val effectiveBannerPreloadCount: Int
+        get() = bannerPreloadCount.coerceAtLeast(0).let { configured ->
+            if (configured > 0) configured
+            else if (preloadBannerOnStart || autoReplenishBanner) 1
+            else 0
+        }
+
     // Backwards compatibility aliases
     val preloadInterstitial: Boolean get() = preloadInterstitialOnStart
     val preloadNative: Boolean get() = preloadNativeOnStart
@@ -142,6 +152,7 @@ data class AdsConfig(
         private var enableBanner: Boolean = true
         private var preloadBannerOnStart: Boolean = false
         private var autoReplenishBanner: Boolean = false
+        private var bannerPreloadCount: Int = 3
 
         private var enableInterstitial: Boolean = true
         private var preloadInterstitialOnStart: Boolean = false
@@ -186,6 +197,7 @@ data class AdsConfig(
         fun setEnableBanner(enable: Boolean) = apply { this.enableBanner = enable }
         fun setPreloadBannerOnStart(preload: Boolean) = apply { this.preloadBannerOnStart = preload }
         fun setAutoReplenishBanner(replenish: Boolean) = apply { this.autoReplenishBanner = replenish }
+        fun setBannerPreloadCount(count: Int) = apply { this.bannerPreloadCount = count.coerceAtLeast(0) }
 
         // Interstitial
         fun setEnableInterstitial(enable: Boolean) = apply { this.enableInterstitial = enable }
@@ -237,6 +249,7 @@ data class AdsConfig(
             enableBanner = enableBanner,
             preloadBannerOnStart = preloadBannerOnStart,
             autoReplenishBanner = autoReplenishBanner,
+            bannerPreloadCount = bannerPreloadCount,
             enableInterstitial = enableInterstitial,
             preloadInterstitialOnStart = preloadInterstitialOnStart,
             autoReplenishInterstitial = autoReplenishInterstitial,

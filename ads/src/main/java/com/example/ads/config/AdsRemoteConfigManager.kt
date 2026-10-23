@@ -29,6 +29,7 @@ object AdsRemoteConfigManager {
     const val KEY_ENABLE_BANNER = "enable_banner_ads"
     const val KEY_PRELOAD_BANNER_ON_START = "preload_banner_on_start"
     const val KEY_AUTO_REPLENISH_BANNER = "auto_replenish_banner"
+    const val KEY_BANNER_PRELOAD_COUNT = "banner_preload_count"
 
     // 2. INTERSTITIAL KEYS
     const val KEY_ENABLE_INTERSTITIAL = "enable_interstitial_ads"
@@ -143,6 +144,8 @@ object AdsRemoteConfigManager {
         val enableBanner = remoteConfig.getBoolean(KEY_ENABLE_BANNER)
         val preloadBannerOnStart = remoteConfig.getBoolean(KEY_PRELOAD_BANNER_ON_START)
         val autoReplenishBanner = remoteConfig.getBoolean(KEY_AUTO_REPLENISH_BANNER)
+        val bannerPreloadCount = remoteConfig.getLong(KEY_BANNER_PRELOAD_COUNT)
+            .toInt().coerceAtLeast(0)
 
         // Interstitial
         val enableInterstitial = remoteConfig.getBoolean(KEY_ENABLE_INTERSTITIAL)
@@ -192,6 +195,7 @@ object AdsRemoteConfigManager {
             enableBanner = enableBanner,
             preloadBannerOnStart = preloadBannerOnStart,
             autoReplenishBanner = autoReplenishBanner,
+            bannerPreloadCount = bannerPreloadCount,
             enableInterstitial = enableInterstitial,
             preloadInterstitialOnStart = preloadInterstitialOnStart,
             autoReplenishInterstitial = autoReplenishInterstitial,

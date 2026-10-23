@@ -39,6 +39,11 @@
         <key>auto_replenish_banner</key>
         <value>false</value>
     </entry>
+    <!-- Number of ready banner views kept per ad unit and size; zero disables the preload pool. -->
+    <entry>
+        <key>banner_preload_count</key>
+        <value>3</value>
+    </entry>
 
     <!-- 2. Interstitial Controls -->
     <entry>

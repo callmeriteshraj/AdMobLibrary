@@ -275,7 +275,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, DefaultLifecycl
             }
 
             override fun onAdImpression() {
-                AdsLogger.d(AdsLogger.TAG_APP_OPEN, "App Open ad impression recorded.")
+                AdsLogger.adImpression("app_open", config.getEffectiveAppOpenId())
             }
 
             override fun onAdClicked() {

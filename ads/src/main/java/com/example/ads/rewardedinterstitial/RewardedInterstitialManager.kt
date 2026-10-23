@@ -144,7 +144,10 @@ class RewardedInterstitialManager {
             }
 
             override fun onAdImpression() {
-                AdsLogger.d(AdsLogger.TAG_REWARDED_INTERSTITIAL, "Impression recorded.")
+                AdsLogger.adImpression(
+                    "rewarded_interstitial",
+                    config.getEffectiveRewardedInterstitialId()
+                )
             }
 
             override fun onAdClicked() {

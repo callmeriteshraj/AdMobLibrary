@@ -27,12 +27,14 @@ import com.google.android.gms.ads.nativead.NativeAdView
  */
 class NativeAdManager {
 
-    private var currentNativeAd: NativeAd? = null
+    private val preloadLock = Any()
     private var preloadedNativeAd: NativeAd? = null
+    private var preloadedAdUnitId: String? = null
     private var isPreloading = false
+    private var preloadGeneration = 0
 
     val isPreloadedAdAvailable: Boolean
-        get() = preloadedNativeAd != null
+        get() = synchronized(preloadLock) { preloadedNativeAd != null }
 
     /**
      * Pre-loads a Native Ad in advance in the background so it can be displayed instantly with 0 ms delay.
@@ -49,12 +51,6 @@ class NativeAdManager {
             return
         }
 
-        if (isPreloading || preloadedNativeAd != null) {
-            AdsLogger.d(AdsLogger.TAG_NATIVE, "Native ad is already preloaded or loading.")
-            onLoaded?.invoke()
-            return
-        }
-
         if (!NetworkUtils.isNetworkAvailable(context)) {
             AdsLogger.w(AdsLogger.TAG_NATIVE, "No network connection for preloading.")
             onFailed?.invoke(AdsError.NetworkError)
@@ -68,25 +64,62 @@ class NativeAdManager {
             return
         }
 
-        isPreloading = true
-        AdsLogger.i(AdsLogger.TAG_NATIVE, "Pre-loading backup native ad with ID: $adUnitId")
+        val generation = synchronized(preloadLock) {
+            if (preloadedNativeAd != null && preloadedAdUnitId == adUnitId) {
+                AdsLogger.i(AdsLogger.TAG_NATIVE, "Preload cache available for native ad ID: $adUnitId")
+                onLoaded?.invoke()
+                return
+            }
+            if (isPreloading) {
+                AdsLogger.d(AdsLogger.TAG_NATIVE, "Native preload already in progress.")
+                return
+            }
+
+            // A config/ad-unit change must never serve an ad loaded for the old unit.
+            if (preloadedNativeAd != null) {
+                preloadedNativeAd?.destroy()
+                preloadedNativeAd = null
+                preloadedAdUnitId = null
+            }
+            isPreloading = true
+            ++preloadGeneration
+        }
+        AdsLogger.i(AdsLogger.TAG_NATIVE, "Native preload started with ID: $adUnitId")
 
         val adLoader = AdLoader.Builder(context.applicationContext, adUnitId)
             .forNativeAd { nativeAd: NativeAd ->
-                AdsLogger.i(AdsLogger.TAG_NATIVE, "Backup Native ad preloaded successfully.")
-                preloadedNativeAd?.destroy()
-                preloadedNativeAd = nativeAd
-                isPreloading = false
-                onLoaded?.invoke()
+                val accepted = synchronized(preloadLock) {
+                    if (generation != preloadGeneration) {
+                        false
+                    } else {
+                        preloadedNativeAd?.destroy()
+                        preloadedNativeAd = nativeAd
+                        preloadedAdUnitId = adUnitId
+                        isPreloading = false
+                        true
+                    }
+                }
+                if (accepted) {
+                    AdsLogger.i(AdsLogger.TAG_NATIVE, "Native preload completed; cache available for ID: $adUnitId")
+                    onLoaded?.invoke()
+                } else {
+                    nativeAd.destroy()
+                }
             }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     AdsLogger.w(AdsLogger.TAG_NATIVE, "Preload native ad failed [code: ${loadAdError.code}]: ${loadAdError.message}")
-                    isPreloading = false
-                    preloadedNativeAd = null
+                    synchronized(preloadLock) {
+                        if (generation != preloadGeneration) return
+                        isPreloading = false
+                    }
                     onFailed?.invoke(
                         AdsError.LoadFailed("Native", loadAdError.code, loadAdError.message)
                     )
+                }
+
+                override fun onAdImpression() {
+                    AdsLogger.adImpression("native", adUnitId)
                 }
             })
             .withNativeAdOptions(
@@ -104,21 +137,41 @@ class NativeAdManager {
      * Consumes the preloaded Native Ad for immediate display, and automatically triggers
      * pre-loading the next backup ad in the background.
      */
-    fun consumePreloadedNativeAd(context: Context, config: AdsConfig): NativeAd? {
+    fun consumePreloadedNativeAd(
+        context: Context,
+        config: AdsConfig,
+        replenishAfterConsume: Boolean = config.autoReplenishNative
+    ): NativeAd? {
         if (!config.enableNative || !AdsManager.isAdsEnabled) {
             AdsLogger.d(AdsLogger.TAG_NATIVE, "Native ads are disabled. Suppressing preloaded native ad consumption.")
             return null
         }
-        val ad = preloadedNativeAd
+        val adUnitId = config.getEffectiveNativeId()
+        val ad = synchronized(preloadLock) {
+            val cachedAd = preloadedNativeAd
+            if (cachedAd == null) {
+                AdsLogger.d(AdsLogger.TAG_NATIVE, "Native preload cache unavailable for ID: $adUnitId")
+                null
+            } else if (preloadedAdUnitId != adUnitId) {
+                cachedAd.destroy()
+                preloadedNativeAd = null
+                preloadedAdUnitId = null
+                AdsLogger.w(AdsLogger.TAG_NATIVE, "Discarded native preload because the ad unit ID changed.")
+                null
+            } else {
+                preloadedNativeAd = null
+                preloadedAdUnitId = null
+                cachedAd
+            }
+        }
         if (ad != null) {
-            preloadedNativeAd = null
-            if (config.autoReplenishNative) {
-                // Automatically pre-load next backup native ad in the background
+            AdsLogger.i(AdsLogger.TAG_NATIVE, "Cached native ad consumed for ID: $adUnitId")
+            if (replenishAfterConsume) {
+                // The consumed ad now belongs to its view container. Refill only the shared cache.
                 preloadNativeAd(context, config)
             }
-            return ad
         }
-        return null
+        return ad
     }
 
     /**
@@ -130,16 +183,22 @@ class NativeAdManager {
         onLoaded: (NativeAd) -> Unit,
         onFailed: (AdsError) -> Unit
     ) {
-        // First check if a pre-cached ad is ready
         val cachedAd = consumePreloadedNativeAd(context, config)
         if (cachedAd != null) {
-            AdsLogger.i(AdsLogger.TAG_NATIVE, "Returning preloaded Native Ad for instant display.")
-            currentNativeAd?.destroy()
-            currentNativeAd = cachedAd
+            AdsLogger.i(AdsLogger.TAG_NATIVE, "NativeAdManager: Returning cached native ad before direct request.")
             onLoaded(cachedAd)
             return
         }
+        loadNativeAdDirect(context, config, onLoaded, onFailed)
+    }
 
+    /** Starts a network request after the caller has already confirmed that the cache is empty. */
+    internal fun loadNativeAdDirect(
+        context: Context,
+        config: AdsConfig,
+        onLoaded: (NativeAd) -> Unit,
+        onFailed: (AdsError) -> Unit
+    ) {
         if (!config.enableNative || !AdsManager.isAdsEnabled) {
             AdsLogger.d(AdsLogger.TAG_NATIVE, "Native ads are disabled.")
             onFailed(AdsError.AdsDisabled)
@@ -159,13 +218,11 @@ class NativeAdManager {
             return
         }
 
-        AdsLogger.i(AdsLogger.TAG_NATIVE, "Requesting native ad directly with ID: $adUnitId")
+        AdsLogger.i(AdsLogger.TAG_NATIVE, "Direct native network request started with ID: $adUnitId")
 
         val adLoader = AdLoader.Builder(context, adUnitId)
             .forNativeAd { nativeAd: NativeAd ->
                 AdsLogger.i(AdsLogger.TAG_NATIVE, "Native ad loaded successfully.")
-                currentNativeAd?.destroy()
-                currentNativeAd = nativeAd
                 onLoaded(nativeAd)
                 if (config.preloadNative) {
                     // Automatically pre-load next backup native ad in background
@@ -185,7 +242,7 @@ class NativeAdManager {
                 }
 
                 override fun onAdImpression() {
-                    AdsLogger.d(AdsLogger.TAG_NATIVE, "Native ad impression recorded.")
+                    AdsLogger.adImpression("native", config.getEffectiveNativeId())
                 }
             })
             .withNativeAdOptions(
@@ -305,10 +362,13 @@ class NativeAdManager {
      * Cleans up the native ad and releases resources.
      */
     fun destroy() {
-        currentNativeAd?.destroy()
-        currentNativeAd = null
-        preloadedNativeAd?.destroy()
-        preloadedNativeAd = null
-        isPreloading = false
+        synchronized(preloadLock) {
+            ++preloadGeneration
+            preloadedNativeAd?.destroy()
+            preloadedNativeAd = null
+            preloadedAdUnitId = null
+            isPreloading = false
+        }
+        AdsLogger.i(AdsLogger.TAG_NATIVE, "Shared native preload cache destroyed.")
     }
 }

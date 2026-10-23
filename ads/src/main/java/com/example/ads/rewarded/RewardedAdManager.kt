@@ -210,7 +210,7 @@ class RewardedAdManager {
             }
 
             override fun onAdImpression() {
-                AdsLogger.d(AdsLogger.TAG_REWARDED, "Rewarded ad impression recorded.")
+                AdsLogger.adImpression("rewarded", config.getEffectiveRewardedId())
             }
 
             override fun onAdClicked() {

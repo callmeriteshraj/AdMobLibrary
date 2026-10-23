@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ads.R
+import com.example.ads.nativead.NativeAdTemplate
 import com.example.ads.util.AdsLogger
 import com.example.adssdkxml.MainActivity
 import com.example.adssdkxml.databinding.ActivityNativeFlowBinding
@@ -18,6 +20,13 @@ class NativeAdFlowActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNativeFlowBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        binding.nativeAdBig.loadAd()
+
+
+
+        binding.nativeAdBig.setTemplate(
+            NativeAdTemplate.Custom(com.example.adssdkxml.R.layout.layout_native_ad_x)
+        )
         binding.nativeAdBig.loadAd()
     }
 }

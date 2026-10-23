@@ -191,9 +191,10 @@ class BannerAdView @JvmOverloads constructor(
                 isAdLoaded = true
                 visibility = View.VISIBLE
                 onAdLoadedListener?.invoke()
-                // Automatically preload next backup banner in background if configured
-                if (config != null && !isCollapsible && config.autoReplenishBanner) {
-                    BannerPreloadCache.preloadBanner(context, config, bannerSize)
+                // Keep the configured pool warm for the next placement. Collapsible banners
+                // carry request-specific extras and are intentionally not pooled.
+                if (config != null && !isCollapsible && config.effectiveBannerPreloadCount > 0) {
+                    BannerPreloadCache.replenish(context, config, bannerSize)
                 }
             }
 
@@ -212,7 +213,7 @@ class BannerAdView @JvmOverloads constructor(
             }
 
             override fun onAdImpression() {
-                AdsLogger.d(logTag, "Ad impression recorded.")
+                AdsLogger.adImpression("banner", effectiveAdUnitId)
             }
         }
 

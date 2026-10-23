@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "413917284824",
+    "project_id": "adssdk-ebb44",
+    "storage_bucket": "adssdk-ebb44.firebasestorage.app"
+  },
+  "client": [
+    {
+
+      "client_info": {
+        "mobilesdk_app_id": "1:413917284824:android:f51c0f3ea5184b33c9caad",
+        "android_client_info": {
+          "package_name": "com.example.adssdkxml"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyTu-padvQOP50KV1hQhFtn-73ywp4c3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

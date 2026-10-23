@@ -20,6 +20,7 @@ object AdsLogger {
     const val TAG_APP_OPEN = "AdsSDK_AppOpen"
     const val TAG_CONSENT = "AdsSDK_Consent"
     const val TAG_REMOTE_CONFIG = "AdsSDK_RemoteConfig"
+    const val TAG_AD_IMPRESSION = "ad_impression"
 
     @Volatile
     var isLoggingEnabled: Boolean = true
@@ -78,6 +79,23 @@ object AdsLogger {
             println("$logLine\n${throwable.stackTraceToString()}")
         } else {
             println(logLine)
+        }
+    }
+
+    /** Logs an impression event to Logcat even when verbose SDK logging is disabled. */
+    fun adImpression(format: String, adUnitId: String? = null) {
+        val logLine = buildString {
+            append("ad_impression format=")
+            append(format)
+            if (!adUnitId.isNullOrBlank()) {
+                append(" ad_unit_id=")
+                append(adUnitId)
+            }
+        }
+        try {
+            Log.i(TAG_AD_IMPRESSION, logLine)
+        } catch (_: Throwable) {
+            // Safe fallback for standard JVM unit tests.
         }
     }
 }

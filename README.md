@@ -144,6 +144,11 @@ In your host application's `app/src/main/AndroidManifest.xml`, configure your **
 
 When using Firebase Remote Config, all ad unit IDs, format switches, test mode, and frequency capping are loaded dynamically from Firebase Cloud with local XML fallbacks:
 
+Set the Remote Config key `banner_preload_count` to the desired ready-queue capacity (for example,
+`2`). To warm the adaptive and medium-rectangle pools during SDK startup, also set
+`preload_banner_on_start=true`; otherwise call `AdsManager.preloadBanner()` for the size your app
+uses after SDK initialization.
+
 ```kotlin
 class MyApplication : Application() {
 
@@ -182,6 +187,8 @@ class MyApplication : Application() {
             .setNativeAdUnitId("ca-app-pub-3940256099942544/2247696110")
             .setAppOpenAdUnitId("ca-app-pub-3940256099942544/9257395921")
             .setEnableBanner(true)
+            // Keep two ready banners queued for each size that this app preloads.
+            .setBannerPreloadCount(2)
             .setEnableInterstitial(true)
             .setEnableRewarded(true)
             .setEnableRewardedInterstitial(true)
@@ -192,7 +199,11 @@ class MyApplication : Application() {
             .setInterstitialFrequency(3)
             .build()
 
-        AdsManager.initialize(context = this, config = adsConfig)
+        AdsManager.initialize(context = this, config = adsConfig) {
+            // Warm only the size this app uses. Each placement consumes a distinct AdView;
+            // the library refills the queue in the background.
+            AdsManager.preloadBanner(this, BannerAdSize.MEDIUM_RECTANGLE)
+        }
         AdsManager.registerRestrictedScreens(LoginActivity::class.java)
     }
 }
@@ -232,6 +243,15 @@ bannerAd.onAdFailedListener = { error ->
     // Handled gracefully without crash
 }
 ```
+
+#### Banner preload queue
+
+Set `bannerPreloadCount` to the number of ready banner views to keep for each ad size and ad unit.
+For example, a value of `2` keeps two MREC views ready after the MREC pool is warmed. Each banner
+placement consumes one view, and the library refills the pool in the background. The first placement
+can still require a normal network load if the pool has not finished warming; a loaded `AdView` is
+owned by that placement until its screen is removed and must not be reused for another placement.
+The default capacity is `3` for testing. Set it to `0` to disable the preload pool.
 
 ---
 
@@ -323,6 +343,12 @@ Templates:
 * `medium`: Full card with Headline, Body, App Icon, MediaView (Image/Video), Rating, Price, Store, and CTA Button.
 * `small`: Compact row without large media, ideal for Feed/List items.
 * Custom layout: Programmatically pass `NativeAdTemplate.Custom(R.layout.my_custom_native_ad)`.
+
+Native loading automatically displays an animated frosted-glass skeleton measured from the selected
+template, including custom layouts defined in the host app. Its media, icon, text and button shapes
+follow the template's actual bounds; no separate shimmer XML is required. The placeholder is removed
+after ad assets are bound, on load failure, or when the container is destroyed. Preloaded ads render
+immediately without an artificial shimmer delay.
 
 ---
 
