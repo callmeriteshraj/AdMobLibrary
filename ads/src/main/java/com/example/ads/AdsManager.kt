@@ -185,14 +185,13 @@ object AdsManager {
 
     /**
      * Enables or disables ads globally (e.g. for premium / ad-free subscribers).
-     * When disabled, immediately purges all in-memory ad caches to free resources.
+     * Disabling suppresses ad display and new requests while retaining in-memory caches,
+     * so a temporary pause can resume without another network load.
+     * Call [destroyAll] explicitly when the caches should also be released.
      */
     fun setAdsEnabled(enabled: Boolean) {
         this.isAdsEnabled = enabled
         AdsLogger.i(AdsLogger.TAG_CORE, "Ads enabled state changed to: $enabled")
-        if (!enabled) {
-            destroyAll()
-        }
     }
 
     /**

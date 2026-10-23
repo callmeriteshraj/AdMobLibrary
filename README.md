@@ -408,6 +408,9 @@ Effect:
 * Interstitials and App Open ads are suppressed (instantly invoking `onDismissed` to ensure no UI hangs).
 * Native ads are hidden.
 * Rewarded ads can optionally remain enabled if `AdsConfig.allowRewardedForPremium = true`.
+* Existing in-memory preload caches are retained. Calling `AdsManager.setAdsEnabled(true)` allows the cached ad to be used again.
+
+To disable ads and permanently release every cached ad, call `AdsManager.destroyAll()` explicitly.
 
 ---
 
